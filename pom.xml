@@ -5,6 +5,10 @@
   <version>0.0.1-SNAPSHOT</version>
 	<modules>
 		<module>original</module>
+		<module>msg</module>
+		<module>common</module>
+		<module>pay</module>
+		<module>log</module>
 	</modules>
 	<packaging>pom</packaging>
   <description>wheels</description>
