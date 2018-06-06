@@ -1,0 +1,1 @@
+package org.xfl.original.interfaces;public interface OriginalDao {}
