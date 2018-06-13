@@ -9,7 +9,8 @@
 		<module>common</module>
 		<module>pay</module>
 		<module>log</module>
-	</modules>
+        <module>cas</module>
+    </modules>
 	<packaging>pom</packaging>
   <description>wheels</description>
 
