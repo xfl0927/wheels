@@ -1,1 +1,1 @@
-package org.wheels.original.entity;/** * @program: wheels * @description: 分页 * @author: xfl * @create: 2018-06-06 12:05 **/public class Page {}
+package org.wheels.original.entity;/** * @program: wheels * @description: 分页 * @author: wheels * @create: 2018-06-06 12:05 **/public class Page {}
