@@ -8,6 +8,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.mapstruct.factory.Mappers;
 import org.wheels.core.original.IConvertor;
+import org.wheels.core.original.IResponseDetail;
+import org.wheels.core.original.IResponseList;
 import org.wheels.core.original.entity.AbstractEntity;
 import org.wheels.core.original.payload.AbstractReqBody;
 
@@ -20,10 +22,22 @@ import java.util.Objects;
  * @author huangwl
  * @since 2023-03-04 15:36
  */
-public interface IWheelsService<RB extends AbstractReqBody, E extends AbstractEntity, RPD, RPL, C extends IConvertor<E, RB, RPD, RPL>> extends IService<E> {
+public interface IWheelsService<RB extends AbstractReqBody, E extends AbstractEntity, RPD extends IResponseDetail,
+        RPL extends IResponseList, C extends IConvertor<E, RB, RPD, RPL>>
+        extends IService<E>
+{
+    /**
+     * 获取转换器的class
+     * @return class
+     */
     default Class<C> currentConvertClass() {
-        return (Class<C>) ReflectionKit.getSuperClassGenericType(this.getClass(), WheelsServiceImpl.class, 4);
+        return (Class<C>) ReflectionKit.getSuperClassGenericType(this.getClass(), IConvertor.class, 4);
     }
+
+    /**
+     * 获取类数据转换器的实例
+     * @return 类数据转换器
+     */
     default C convertor(){
         return Mappers.getMapper(currentConvertClass());
     }
@@ -34,7 +48,7 @@ public interface IWheelsService<RB extends AbstractReqBody, E extends AbstractEn
      * @param requestBody 请求对象
      */
     default boolean save(RB requestBody) {
-        E e = convertor().convert2Entity(requestBody);
+        E e = convertor().reqBody2Entity(requestBody);
         return save(e);
     }
 
@@ -44,7 +58,7 @@ public interface IWheelsService<RB extends AbstractReqBody, E extends AbstractEn
      * @param requestBody 请求对象
      */
     default boolean updateById(RB requestBody) {
-        E e = convertor().convert2Entity(requestBody);
+        E e = convertor().reqBody2Entity(requestBody);
         return updateById(e);
     }
 
@@ -55,7 +69,7 @@ public interface IWheelsService<RB extends AbstractReqBody, E extends AbstractEn
      * @param updateWrapper 实体对象封装操作类 {@link com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper}
      */
     default boolean update(RB requestBody, Wrapper<E> updateWrapper) {
-        E e = convertor().convert2Entity(requestBody);
+        E e = convertor().reqBody2Entity(requestBody);
         return update(e, updateWrapper);
     }
 
@@ -65,12 +79,12 @@ public interface IWheelsService<RB extends AbstractReqBody, E extends AbstractEn
      *
      * @param queryWrapper 实体对象封装操作类 {@link com.baomidou.mybatisplus.core.conditions.query.QueryWrapper}
      */
-    default RPD getOneRPD(Wrapper<E> queryWrapper) {
+    default RPD getOneRespDetail(Wrapper<E> queryWrapper) {
         E one = getOne(queryWrapper);
         if (Objects.isNull(one)) {
             return null;
         }
-        return convertor().convert2Detail(one);
+        return convertor().entity2RespDetail(one);
     }
 
     /**
@@ -78,9 +92,9 @@ public interface IWheelsService<RB extends AbstractReqBody, E extends AbstractEn
      *
      * @param queryWrapper 实体对象封装操作类 {@link com.baomidou.mybatisplus.core.conditions.query.QueryWrapper}
      */
-    default List<RPL> listRPL(Wrapper<E> queryWrapper) {
+    default List<RPL> listRespList(Wrapper<E> queryWrapper) {
         List<E> list = list(queryWrapper);
-        return convertor().convert2List(list);
+        return convertor().entities2RespList(list);
     }
 
     /**
@@ -88,9 +102,9 @@ public interface IWheelsService<RB extends AbstractReqBody, E extends AbstractEn
      *
      * @see Wrappers#emptyWrapper()
      */
-    default List<RPL> listRPL() {
+    default List<RPL> listRespList() {
         List<E> list = list(Wrappers.emptyWrapper());
-        return convertor().convert2List(list);
+        return convertor().entities2RespList(list);
     }
 
     /**
@@ -99,12 +113,12 @@ public interface IWheelsService<RB extends AbstractReqBody, E extends AbstractEn
      * @param page         翻页对象
      * @param queryWrapper 实体对象封装操作类 {@link com.baomidou.mybatisplus.core.conditions.query.QueryWrapper}
      */
-    default Page<RPL> pageRPL(IPage<E> page, Wrapper<E> queryWrapper) {
+    default Page<RPL> pageRespList(IPage<E> page, Wrapper<E> queryWrapper) {
         IPage<E> pageInfo = page(page, queryWrapper);
         Page<RPL> pages = new Page<>();
         pages.setPages(pageInfo.getPages());
         pages.setTotal(pageInfo.getTotal());
-        List<RPL> rpls = convertor().convert2List(pageInfo.getRecords());
+        List<RPL> rpls = convertor().entities2RespList(pageInfo.getRecords());
         pages.setRecords(rpls);
         pages.setCurrent(page.getCurrent());
         pages.setSize(page.getSize());

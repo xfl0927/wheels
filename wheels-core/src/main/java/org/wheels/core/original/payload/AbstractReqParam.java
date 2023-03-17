@@ -4,7 +4,7 @@ package org.wheels.core.original.payload;
 import org.wheels.core.original.IRequestPayload;
 
 /**
- * 基础请求体，用于post/put等请求
+ * 基础请求体，用于get等请求
  */
 public abstract class AbstractReqParam implements IRequestPayload {
     /**
