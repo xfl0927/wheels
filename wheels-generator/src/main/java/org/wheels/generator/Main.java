@@ -1,8 +1,9 @@
 package org.wheels.generator;
 
-import com.baomidou.mybatisplus.generator.FastAutoGenerator;
-import com.baomidou.mybatisplus.generator.config.OutputFile;
-import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
+
+import org.wheels.generator.domain.gen.FastAutoGenerator;
+import org.wheels.generator.domain.gen.config.OutputFile;
+import org.wheels.generator.domain.gen.engine.FreemarkerTemplateEngine;
 
 import java.util.Collections;
 

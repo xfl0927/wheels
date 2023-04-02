@@ -1,0 +1,1 @@
+package org.wheels.generator.domain.model;
